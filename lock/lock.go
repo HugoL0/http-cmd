@@ -6,10 +6,10 @@ import (
 	"io"
 )
 
-const LockFileName = "lock"
+const fileName = "lock"
 
 func TryLockDaemon(repoPath string) (io.Closer, error) {
-	locked, err := lockfile.Locked(repoPath, LockFileName)
+	locked, err := lockfile.Locked(repoPath, fileName)
 	if err != nil {
 		return nil, err
 	}
@@ -24,5 +24,5 @@ func TryLockDaemon(repoPath string) (io.Closer, error) {
 }
 
 func CheckLocked(repoPath string) (bool, error) {
-	return lockfile.Locked(repoPath, LockFileName)
+	return lockfile.Locked(repoPath, fileName)
 }

@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/bdengine/ipfs-cmd/commands"
+	"github.com/bdengine/ipfs-cmd/environment"
 	"github.com/bdengine/ipfs-cmd/lock"
 	cmds "github.com/ipfs/go-ipfs-cmds"
 	"github.com/ipfs/go-ipfs-cmds/http"
@@ -26,15 +26,15 @@ var DaemonCmd = &cmds.Command{
 	Arguments: nil,
 	PreRun:    nil,
 	Run: func(req *cmds.Request, emit cmds.ResponseEmitter, env cmds.Environment) error {
-		c := env.(*commands.Context)
-		locked, err := lock.CheckLocked(c.ConfigRoot)
+		c := env.(*environment.Env)
+		locked, err := lock.CheckLocked(c.GetPath())
 		if err != nil {
 			return err
 		}
 		if locked {
 			return fmt.Errorf("守护进程正在运行中")
 		}
-		for s1, s2 := range c.Config.LogLevel {
+		for s1, s2 := range c.GetLogLevel() {
 			err := logging.SetLogLevel(s1, s2)
 			if err != nil {
 				log.Errorf("error setting %s to level %s,err:%s", s1, s2, err)
@@ -44,9 +44,9 @@ var DaemonCmd = &cmds.Command{
 		if background {
 			// 启动子命令
 			e := &exec.Cmd{
-				Path: c.Config.HelperBin,
-				Args: []string{c.Config.HelperBin, "daemon", "--background=false"},
-				Env:  c.Config.HelperEnv,
+				Path: c.GetBin(),
+				Args: []string{c.GetBin(), "daemon", "--background=false"},
+				Env:  c.GetBinEnv(),
 			}
 			err := e.Start()
 			if err != nil {
@@ -64,10 +64,10 @@ var DaemonCmd = &cmds.Command{
 
 		ech := make(chan error, 5)
 		go func() {
-			log.Infof("启动http服务,端口%s", c.Config.Port)
+			log.Infof("启动http服务,端口%s", c.GetPort())
 			h := http.NewHandler(env, RootCmd, http.NewServerConfig())
 			// create http rpc server
-			err = nethttp.ListenAndServe(c.Config.Port, h)
+			err = nethttp.ListenAndServe(c.GetPort(), h)
 			if err != nil {
 				ech <- err
 				return
@@ -82,14 +82,14 @@ var DaemonCmd = &cmds.Command{
 			return err
 		default:
 			go func() {
-				err = Daemon(env)
+				err = c.Daemon()
 				if err != nil {
 					ech <- err
 				}
 			}()
 		}
 
-		err = commands.Run(env, ech)
+		err = Run(c, ech)
 		if err != nil {
 			log.Error(err)
 			return err
@@ -99,8 +99,12 @@ var DaemonCmd = &cmds.Command{
 	NoRemote: true,
 }
 
-type DaemonWork func(env cmds.Environment) error
-
-var Daemon DaemonWork = func(env cmds.Environment) error {
-	return nil
+func Run(env *environment.Env, ech chan error) error {
+	select {
+	case <-env.Ctx.Done():
+		log.Info("接收到退出信号")
+		return nil
+	case err := <-ech:
+		return err
+	}
 }

@@ -3,6 +3,7 @@ module github.com/bdengine/ipfs-cmd
 require (
 	github.com/ipfs/go-fs-lock v0.0.7
 	github.com/ipfs/go-ipfs-cmds v0.8.1
+	github.com/ipfs/go-log v1.0.4
 )
 
 require (
@@ -11,7 +12,6 @@ require (
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/ipfs/go-ipfs-files v0.0.8 // indirect
 	github.com/ipfs/go-ipfs-util v0.0.2 // indirect
-	github.com/ipfs/go-log v1.0.4 // indirect
 	github.com/ipfs/go-log/v2 v2.3.0 // indirect
 	github.com/mattn/go-isatty v0.0.13 // indirect
 	github.com/minio/blake2b-simd v0.0.0-20160723061019-3f5f724cb5b1 // indirect
@@ -30,7 +30,5 @@ require (
 	golang.org/x/crypto v0.0.0-20200115085410-6d4e4cb37c7d // indirect
 	golang.org/x/sys v0.0.0-20200930185726-fdedc70b468f // indirect
 )
-
-//replace github.com/ipfs/go-cid => ../go-cid
 
 go 1.18

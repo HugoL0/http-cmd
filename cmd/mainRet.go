@@ -3,16 +3,16 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"github.com/bdengine/ipfs-cmd/environment"
 	"github.com/bdengine/ipfs-cmd/lock"
-	"github.com/bdengine/ipfs-cmd/register"
 	cmds "github.com/ipfs/go-ipfs-cmds"
 	"github.com/ipfs/go-ipfs-cmds/cli"
 	"github.com/ipfs/go-ipfs-cmds/http"
 	"os"
 )
 
-func MainRet(env interface{}, root string, port string) error {
-	err := ConstructCmd()
+func MainRet(env environment.Environment) error {
+	err := constructCmd()
 	if err != nil {
 		return err
 	}
@@ -21,13 +21,13 @@ func MainRet(env interface{}, root string, port string) error {
 	if err != nil {
 		return err
 	}
-	req.Options["encoding"] = cmds.Text
+	//req.Options["encoding"] = cmds.Text
 	// create an emitter
 	res, err := cli.NewResponseEmitter(os.Stdout, os.Stderr, req)
 	if err != nil {
 		return err
 	}
-	executor, err := makeExecutor(req, root, port)
+	executor, err := makeExecutor(req, env)
 	if err != nil {
 		return err
 	}
@@ -39,8 +39,8 @@ func MainRet(env interface{}, root string, port string) error {
 	return nil
 }
 
-func ConstructCmd() error {
-	for s, command := range register.CmdMap {
+func constructCmd() error {
+	for s, command := range cmdMap {
 		// 检查是否重复
 		if _, ok := RootCmd.Subcommands[s]; ok {
 			return fmt.Errorf("重复的命令%v", s)
@@ -50,15 +50,15 @@ func ConstructCmd() error {
 	return nil
 }
 
-func makeExecutor(req *cmds.Request, root string, port string) (cmds.Executor, error) {
-	rok, err := checkRemote(req.Command, root)
+func makeExecutor(req *cmds.Request, env environment.Environment) (cmds.Executor, error) {
+	rok, err := checkRemote(req.Command, env.GetPath())
 	if err != nil {
 		return nil, err
 	}
 	var executor cmds.Executor
 	if rok {
 		// create http rpc client
-		executor = http.NewClient(port)
+		executor = http.NewClient(env.GetPort())
 	} else {
 		executor = cmds.NewExecutor(RootCmd)
 	}
