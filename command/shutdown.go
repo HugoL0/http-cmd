@@ -1,9 +1,9 @@
-package cmd
+package command
 
 import (
 	"fmt"
-	"github.com/bdengine/ipfs-cmd/environment"
-	"github.com/bdengine/ipfs-cmd/lock"
+	"github.com/hugo/http-cmd/environment"
+	"github.com/hugo/http-cmd/lock"
 	cmds "github.com/ipfs/go-ipfs-cmds"
 )
 

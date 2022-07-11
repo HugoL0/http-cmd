@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/bdengine/ipfs-cmd/environment"
+	"github.com/hugo/http-cmd/environment"
 )
 
 type Config struct {
@@ -25,7 +25,7 @@ func (e MyEnv) Daemon() error {
 func ConstructEnv() (*environment.Env, error) {
 	m := &MyEnv{
 		config: Config{
-			Port:     ":9999",
+			Port:     "127.0.0.1:9999",
 			Path:     "D:/code/go/src/github.com/hugo/http-cmd/example/helloWorld",
 			LogLevel: nil,
 			Bin:      "D:/code/go/src/github.com/hugo/http-cmd/example/helloWorld/hello.exe",

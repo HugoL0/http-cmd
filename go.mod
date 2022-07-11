@@ -1,4 +1,4 @@
-module github.com/bdengine/ipfs-cmd
+module github.com/hugo/http-cmd
 
 require (
 	github.com/ipfs/go-fs-lock v0.0.7

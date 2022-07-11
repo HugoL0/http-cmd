@@ -1,17 +1,17 @@
-package cmd
+package command
 
 import (
 	"context"
 	"fmt"
-	"github.com/bdengine/ipfs-cmd/environment"
-	"github.com/bdengine/ipfs-cmd/lock"
+	"github.com/hugo/http-cmd/environment"
+	"github.com/hugo/http-cmd/lock"
 	cmds "github.com/ipfs/go-ipfs-cmds"
 	"github.com/ipfs/go-ipfs-cmds/cli"
 	"github.com/ipfs/go-ipfs-cmds/http"
 	"os"
 )
 
-func MainRet(env environment.Environment) error {
+func MainRet(env *environment.Env) error {
 	err := constructCmd()
 	if err != nil {
 		return err

@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/bdengine/ipfs-cmd/cmd"
+	"github.com/hugo/http-cmd/command"
 	cmds "github.com/ipfs/go-ipfs-cmds"
 )
 
 func main() {
-	err := cmd.Register(map[string]*cmds.Command{"hello": test})
+	err := command.Register(map[string]*cmds.Command{"hello": test})
 	if err != nil {
 		panic(err)
 	}
@@ -14,7 +14,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	err = cmd.MainRet(env)
+	err = command.MainRet(env)
 	if err != nil {
 		panic(err)
 	}

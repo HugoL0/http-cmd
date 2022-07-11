@@ -1,4 +1,4 @@
-package cmd
+package command
 
 import (
 	cmds "github.com/ipfs/go-ipfs-cmds"

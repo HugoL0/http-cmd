@@ -7,18 +7,7 @@ import (
 
 var test = &cmds.Command{
 	Options: []cmds.Option{
-		cmds.StringsOption("name", "n", "your name"),
-	},
-	Arguments: []cmds.Argument{
-		{
-			Name:          "you",
-			Type:          0,
-			Required:      false,
-			Variadic:      false,
-			SupportsStdin: false,
-			Recursive:     false,
-			Description:   "",
-		},
+		cmds.StringOption("name", "n", "your name"),
 	},
 	Run: func(req *cmds.Request, emit cmds.ResponseEmitter, env cmds.Environment) error {
 		name, _ := req.Options["name"].(string)
